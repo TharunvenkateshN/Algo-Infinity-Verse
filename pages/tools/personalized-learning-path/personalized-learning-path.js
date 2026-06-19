@@ -18,214 +18,214 @@ const PATHS = {
   beginner: [
     {
       name: "Programming Fundamentals",
-      icon: "💻",
+      icon: '<i class="fas fa-laptop-code" style="color: #38bdf8;"></i>',
       difficulty: "easy",
       hours: 8,
-      link: "index.html#topics",
+      link: "/index.html#topics",
       desc: "Variables, control flow, functions, recursion basics"
     },
     {
       name: "Arrays & Strings",
-      icon: "📦",
+      icon: '<i class="fas fa-layer-group" style="color: #a855f7;"></i>',
       difficulty: "easy",
       hours: 10,
-      link: "array-learning.html",
+      link: "/pages/learning/array-learning/array-learning.html",
       desc: "Traversal, two-pointer, sliding window, sorting"
     },
     {
       name: "Linked Lists",
-      icon: "🔗",
+      icon: '<i class="fas fa-link" style="color: #22c55e;"></i>',
       difficulty: "easy",
       hours: 8,
-      link: "linkedlist-learning.html",
+      link: "/pages/learning/linkedlist-learning/linkedlist-learning.html",
       desc: "Singly, doubly, circular; reversal & cycle detection"
     },
     {
       name: "Stacks & Queues",
-      icon: "📚",
+      icon: '<i class="fas fa-bars" style="color: #f59e0b;"></i>',
       difficulty: "easy",
       hours: 6,
-      link: "stack-learning.html",
+      link: "/pages/learning/stack-learning/stack-learning.html",
       desc: "Monotonic stack, priority queue, BFS/DFS intro"
     },
     {
       name: "Trees & Binary Search Trees",
-      icon: "🌳",
+      icon: '<i class="fas fa-network-wired" style="color: #ec4899;"></i>',
       difficulty: "medium",
       hours: 10,
-      link: "trees-learning.html",
+      link: "/pages/learning/trees-learning/trees-learning.html",
       desc: "Traversals, height, balance, BST operations"
     },
     {
       name: "Recursion & Backtracking",
-      icon: "🔄",
+      icon: '<i class="fas fa-sync-alt" style="color: #ef4444;"></i>',
       difficulty: "medium",
       hours: 10,
-      link: "recursion-learning.html",
+      link: "/pages/learning/recursion-learning/recursion-learning.html",
       desc: "Base cases, call stacks, permutations, N-Queens"
     },
     {
       name: "Sorting Algorithms",
-      icon: "🔃",
+      icon: '<i class="fas fa-sort-amount-up" style="color: #14b8a6;"></i>',
       difficulty: "easy",
       hours: 6,
-      link: "sorting-visualizer.html",
+      link: "/pages/visualizers/sorting-visualizer/sorting-visualizer.html",
       desc: "Merge, quick, heap sort — time & space tradeoffs"
     },
     {
       name: "Dynamic Programming Basics",
-      icon: "⚡",
+      icon: '<i class="fas fa-brain" style="color: #8b5cf6;"></i>',
       difficulty: "hard",
       hours: 14,
-      link: "dp-learning.html",
+      link: "/pages/learning/dp-learning/dp-learning.html",
       desc: "Memoisation, tabulation, knapsack, LCS, LIS"
     },
     {
       name: "System Design Basics",
-      icon: "🏗️",
+      icon: '<i class="fas fa-server" style="color: #6366f1;"></i>',
       difficulty: "medium",
       hours: 8,
-      link: "system-design.html",
+      link: "/pages/resources/system-design/system-design.html",
       desc: "Scalability, caching, load balancing fundamentals"
     }
   ],
   placement: [
     {
       name: "Aptitude & Reasoning",
-      icon: "🧠",
+      icon: '<i class="fas fa-lightbulb" style="color: #f59e0b;"></i>',
       difficulty: "easy",
       hours: 10,
-      link: "index.html#quiz",
+      link: "/index.html#quiz",
       desc: "Quantitative aptitude, logical reasoning, verbal ability"
     },
     {
       name: "OOP Concepts",
-      icon: "🧩",
+      icon: '<i class="fas fa-cubes" style="color: #38bdf8;"></i>',
       difficulty: "medium",
       hours: 8,
-      link: "oop-learning.html",
+      link: "/index.html#topics", // generic fallback as oop-learning.html might not exist
       desc: "Inheritance, polymorphism, encapsulation, abstraction"
     },
     {
       name: "DBMS & SQL",
-      icon: "🗄️",
+      icon: '<i class="fas fa-database" style="color: #10b981;"></i>',
       difficulty: "medium",
       hours: 10,
-      link: "dbms-learning.html",
+      link: "/pages/learning/dbms-learning/dbms-learning.html",
       desc: "Normalisation, joins, indexing, transactions"
     },
     {
       name: "Operating Systems",
-      icon: "🖥️",
+      icon: '<i class="fas fa-microchip" style="color: #6366f1;"></i>',
       difficulty: "medium",
       hours: 10,
-      link: "os-learning.html",
+      link: "/pages/learning/os-learning/os-learning.html",
       desc: "Scheduling, memory management, deadlocks, semaphores"
     },
     {
       name: "Computer Networks",
-      icon: "🌐",
+      icon: '<i class="fas fa-globe" style="color: #0ea5e9;"></i>',
       difficulty: "medium",
       hours: 8,
-      link: "index.html#topics",
+      link: "/index.html#topics",
       desc: "OSI model, TCP/IP, HTTP, DNS, sockets"
     },
     {
       name: "Data Structures Practice",
-      icon: "📊",
+      icon: '<i class="fas fa-chart-bar" style="color: #a855f7;"></i>',
       difficulty: "hard",
       hours: 20,
-      link: "array-learning.html",
+      link: "/pages/learning/array-learning/array-learning.html",
       desc: "Arrays, trees, graphs, heaps — 50+ practice problems"
     },
     {
       name: "Behavioural Interview Prep",
-      icon: "🎤",
+      icon: '<i class="fas fa-comments" style="color: #ec4899;"></i>',
       difficulty: "easy",
       hours: 6,
-      link: "behavioral-questions.html",
+      link: "/pages/interview/behavioral-questions/behavioral-questions.html",
       desc: "STAR method, common HR questions, storytelling"
     },
     {
       name: "Mock Interviews & Tests",
-      icon: "📝",
+      icon: '<i class="fas fa-tasks" style="color: #ef4444;"></i>',
       difficulty: "hard",
       hours: 12,
-      link: "quiz-system.html",
+      link: "/index.html#quiz",
       desc: "Timed problem sets, mock coding rounds, review"
     }
   ],
   faang: [
     {
       name: "Advanced Array Techniques",
-      icon: "🔬",
+      icon: '<i class="fas fa-boxes" style="color: #14b8a6;"></i>',
       difficulty: "hard",
       hours: 10,
-      link: "array-learning.html",
+      link: "/pages/learning/array-learning/array-learning.html",
       desc: "Kadane's, Dutch flag, sliding window, two-pointer"
     },
     {
       name: "Graph Algorithms",
-      icon: "🕸️",
+      icon: '<i class="fas fa-project-diagram" style="color: #6366f1;"></i>',
       difficulty: "hard",
       hours: 16,
-      link: "graph-learning.html",
+      link: "/pages/learning/graph-learning/graph-learning.html",
       desc: "DFS/BFS, Dijkstra, Bellman-Ford, union-find, topological sort"
     },
     {
       name: "Dynamic Programming (Advanced)",
-      icon: "⚡",
+      icon: '<i class="fas fa-bolt" style="color: #f59e0b;"></i>',
       difficulty: "hard",
       hours: 20,
-      link: "dp-learning.html",
+      link: "/pages/learning/dp-learning/dp-learning.html",
       desc: "Bitmask DP, digit DP, interval DP, SOS DP"
     },
     {
       name: "Bit Manipulation",
-      icon: "⚙️",
+      icon: '<i class="fas fa-microchip" style="color: #0ea5e9;"></i>',
       difficulty: "hard",
       hours: 8,
-      link: "bit-manipulation-learning.html",
+      link: "/pages/learning/bit-manipulation-learning/bit-manipulation-learning.html",
       desc: "Bitmask tricks, XOR patterns, power-of-2 checks"
     },
     {
       name: "Trees & Segment Trees",
-      icon: "🌲",
+      icon: '<i class="fas fa-sitemap" style="color: #10b981;"></i>',
       difficulty: "hard",
       hours: 14,
-      link: "segment-tree-learning.html",
+      link: "/pages/learning/segment-tree-learning/segment-tree-learning.html",
       desc: "AVL, red-black, segment trees, Fenwick trees"
     },
     {
       name: "System Design (Advanced)",
-      icon: "🏗️",
+      icon: '<i class="fas fa-server" style="color: #a855f7;"></i>',
       difficulty: "hard",
       hours: 20,
-      link: "system-design.html",
+      link: "/pages/resources/system-design/system-design.html",
       desc: "Distributed systems, sharding, CAP theorem, real cases"
     },
     {
       name: "Behavioural Interviews",
-      icon: "🎯",
+      icon: '<i class="fas fa-user-tie" style="color: #ec4899;"></i>',
       difficulty: "medium",
       hours: 8,
-      link: "behavioral-questions.html",
+      link: "/pages/interview/behavioral-questions/behavioral-questions.html",
       desc: "Leadership principles, conflict resolution, impact stories"
     },
     {
       name: "Competitive Programming Patterns",
-      icon: "🏆",
+      icon: '<i class="fas fa-code" style="color: #f43f5e;"></i>',
       difficulty: "hard",
       hours: 18,
-      link: "cp-patterns-learning.html",
+      link: "/index.html#practice",
       desc: "Greedy, two-pointer, divide & conquer, string algorithms"
     },
     {
       name: "Mock Coding Rounds",
-      icon: "🕐",
+      icon: '<i class="fas fa-stopwatch" style="color: #8b5cf6;"></i>',
       difficulty: "hard",
       hours: 16,
-      link: "quiz-system.html",
+      link: "/index.html#quiz",
       desc: "Timed FAANG-style contests, whiteboard problems, review"
     }
   ]
@@ -376,9 +376,12 @@ function buildRoadmap(goal) {
     step.setAttribute("data-index", i);
 
     step.innerHTML = `
-      <div class="step-dot">${isDone ? "✓" : topic.icon}</div>
+      <div class="step-dot" style="font-size: 1.2rem;">${isDone ? '<i class="fas fa-check" style="color: #fff;"></i>' : '<i class="fas fa-circle" style="color: var(--primary); font-size: 0.6rem;"></i>'}</div>
       <div class="step-card">
-        <input type="checkbox" class="step-checkbox" id="step-${i}" ${isDone ? "checked" : ""} aria-label="${topic.name}">
+        <label for="step-${i}" class="step-icon-label" style="cursor: pointer; font-size: 1.8rem; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 40px;">
+          ${isDone ? '<i class="fas fa-check-circle" style="color: #22c55e;"></i>' : topic.icon}
+        </label>
+        <input type="checkbox" class="step-checkbox" id="step-${i}" ${isDone ? "checked" : ""} aria-label="${topic.name}" style="display:none;">
         <div class="step-info">
           <div class="step-name ${isDone ? "done" : ""}">
             ${topic.name}
@@ -449,7 +452,9 @@ function attachCheckboxListeners(goal) {
         step.classList.add("completed");
         step.classList.remove("active");
         const dot = step.querySelector(".step-dot");
-        if (dot) dot.textContent = "✓";
+        if (dot) dot.innerHTML = '<i class="fas fa-check" style="color: #fff;"></i>';
+        const labelEl = step.querySelector(".step-icon-label");
+        if (labelEl) labelEl.innerHTML = '<i class="fas fa-check-circle" style="color: #22c55e;"></i>';
         const nameEl = step.querySelector(".step-name");
         if (nameEl) nameEl.classList.add("done");
         showToast(`"${PATHS[goal][index].name}" marked complete!`, "✅");
@@ -457,7 +462,9 @@ function attachCheckboxListeners(goal) {
         checked = checked.filter((i) => i !== index);
         step.classList.remove("completed");
         const dot = step.querySelector(".step-dot");
-        if (dot) dot.textContent = PATHS[goal][index].icon;
+        if (dot) dot.innerHTML = '<i class="fas fa-circle" style="color: var(--primary); font-size: 0.6rem;"></i>';
+        const labelEl = step.querySelector(".step-icon-label");
+        if (labelEl) labelEl.innerHTML = PATHS[goal][index].icon;
         const nameEl = step.querySelector(".step-name");
         if (nameEl) nameEl.classList.remove("done");
       }
