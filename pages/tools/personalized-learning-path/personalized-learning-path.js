@@ -381,7 +381,7 @@ function buildRoadmap(goal) {
         <label for="step-${i}" class="step-icon-label" style="cursor: pointer; font-size: 1.8rem; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 40px;">
           ${isDone ? '<i class="fas fa-check-circle" style="color: #22c55e;"></i>' : topic.icon}
         </label>
-        <input type="checkbox" class="step-checkbox" id="step-${i}" ${isDone ? "checked" : ""} aria-label="${topic.name}" style="display:none;">
+        <input type="checkbox" class="step-checkbox" id="step-${i}" ${isDone ? "checked" : ""} aria-label="${topic.name}" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
         <div class="step-info">
           <div class="step-name ${isDone ? "done" : ""}">
             ${topic.name}

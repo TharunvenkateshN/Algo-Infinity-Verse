@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "arrays": "arrays", "strings": "strings", "linkedlist": "linkedlist",
       "trees": "trees", "graphs": "graphs", "dp": "dp", "stacks": "stacks"
     };
-    const cat = categoryMap[nodeId] || nodeId.replace('-', '');
+    const cat = categoryMap[nodeId] || nodeId.replaceAll('-', '');
     const hasCompleted = userProgress.completedProblems.some(pid => typeof pid === 'string' && pid.toLowerCase().includes(cat.toLowerCase()));
     
     if (!hasCompleted && typeof practiceProblems !== 'undefined') {
@@ -202,6 +202,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .on("start", dragstarted)
       .on("drag", dragged)
       .on("end", dragended))
+    .attr("tabindex", "0")
+    .attr("role", "button")
+    .on("keydown", (event, d) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openOutcomePanel(d);
+      }
+    })
     .on("click", (event, d) => {
       openOutcomePanel(d);
     })
