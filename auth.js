@@ -1,4 +1,5 @@
 (function () {
+  document.documentElement.classList.add("auth-unverified");
   const privateHashes = new Set(["#dashboard", "#profile"]);
   let currentSession = null;
   let authReady = false;
@@ -52,7 +53,29 @@
   }
 
   function updateProfileNames(user) {
-    if (!user) return;
+    if (!user) {
+      [
+        "profileName",
+        "profileSectionName",
+        "dashboardProfileName",
+        "profileNameInput",
+      ].forEach((id) => {
+        const element = document.getElementById(id);
+        if (!element) return;
+
+        if (element.tagName === "INPUT") element.value = "";
+        else element.textContent = "Learner";
+      });
+
+      document
+        .querySelectorAll("[data-auth-user-name]")
+        .forEach((el) => (el.textContent = "Learner"));
+
+      document
+        .querySelectorAll("[data-auth-user-email]")
+        .forEach((el) => (el.textContent = ""));
+      return;
+    }
 
     [
       "profileName",
@@ -64,10 +87,7 @@
       if (!element) return;
 
       if (element.tagName === "INPUT") element.value = user.name;
-      else if (
-        !element.textContent ||
-        element.textContent.trim() === "Learner"
-      ) {
+      else {
         element.textContent = user.name;
       }
     });
@@ -172,16 +192,6 @@
     }); // ✅ closes addEventListener
   } // ✅ closes wireLogout
 
-  function passwordStrength(password) {
-    let score = 0;
-    if (password.length >= 8) score += 1;
-    if (/[a-z]/.test(password)) score += 1;
-    if (/[A-Z]/.test(password)) score += 1;
-    if (/\d/.test(password)) score += 1;
-    if (/[^A-Za-z0-9]/.test(password)) score += 1;
-    return score;
-  }
-
   function setFormMessage(form, message, type) {
     const messageBox = form.querySelector("[data-auth-message]");
     if (!messageBox) return;
@@ -233,22 +243,23 @@
     };
 
     function showError(input, message) {
-      let errorEl = input.parentElement.querySelector(".inline-error");
+  const container = input.closest(".form-group") || input.parentElement;
+  let errorEl = container.querySelector(".inline-error");
 
-      if (!errorEl) {
-        errorEl = document.createElement("div");
-        errorEl.className = "inline-error";
-        errorEl.style.color = "#ef4444";
-        errorEl.style.fontSize = "0.8rem";
-        errorEl.style.marginTop = "0.3rem";
-        input.parentElement.appendChild(errorEl);
-      }
+  if (!errorEl) {
+    errorEl = document.createElement("div");
+    errorEl.className = "inline-error";
+    errorEl.style.color = "#ef4444";
+    errorEl.style.fontSize = "0.8rem";
+    errorEl.style.marginTop = "0.3rem";
+    container.appendChild(errorEl);
+  }
 
-      errorEl.textContent = message;
-      input.style.borderColor = message
-        ? "#ef4444"
-        : "rgba(255, 255, 255, 0.1)";
-    }
+  errorEl.textContent = message;
+  input.style.borderColor = message
+    ? "#ef4444"
+    : "rgba(255, 255, 255, 0.1)";
+}
 
     form.querySelectorAll("input").forEach((input) => {
       input.addEventListener("input", () => {
@@ -303,8 +314,15 @@
         return;
       }
 
+      // Loading state ON
       const submitButton = form.querySelector("button[type='submit']");
+      if (!submitButton) return; // Guard: ensure submit button exists
+      submitButton.disabled = true;
       submitButton.dataset.loading = "true";
+      submitButton.innerHTML = `
+  <span class="btn-spinner"></span>
+  <span>${mode === "login" ? "Logging in..." : "Signing up..."}</span>
+`;
       setFormMessage(form, "Working...", "info");
 
       try {
@@ -326,6 +344,11 @@
       } finally {
         submitButton.disabled = false;
         delete submitButton.dataset.loading;
+        // Restore button text
+        submitButton.innerHTML =
+          mode === "login"
+            ? `<i class="fas fa-right-to-bracket"></i><span>Log In</span>`
+            : `<i class="fas fa-user-plus"></i><span>Sign Up</span>`;
       }
     });
   }
@@ -362,6 +385,8 @@
         authenticated: false,
         user: null,
       };
+      document.documentElement.classList.remove("auth-verified");
+      document.documentElement.classList.add("auth-unverified");
       authReady = true;
       window.algoAuth = currentSession;
 
@@ -382,6 +407,14 @@
     authReady = true;
     window.algoAuth = currentSession;
 
+    if (currentSession.authenticated) {
+      document.documentElement.classList.remove("auth-unverified");
+      document.documentElement.classList.add("auth-verified");
+    } else {
+      document.documentElement.classList.remove("auth-verified");
+      document.documentElement.classList.add("auth-unverified");
+    }
+
     if (currentSession.authenticated && isAuthPage()) {
       location.href = getNextDestination();
       return;
@@ -401,35 +434,35 @@
 })();
 
 function wireDeactivateAccount() {
-  const btn = document.getElementById(
-    "deactivateAccountBtn"
-  );
+  const btn = document.getElementById("deactivateAccountBtn");
 
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
     const confirmed = confirm(
-      "Are you sure you want to deactivate your account?"
+      "Are you sure you want to deactivate your account?",
     );
 
     if (!confirmed) return;
 
     try {
-      const response = await fetch(
-        "/api/deactivate-account",
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
+      const response = await fetch("/api/deactivate-account", {
+        method: "POST",
+        credentials: "include",
+      });
 
-      const data = await response.json();
+      const contentType =
+  response.headers.get("content-type") || "";
+
+if (!contentType.includes("application/json")) {
+  const text = await response.text();
+  throw new Error(text);
+}
+
+const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.error ||
-          "Failed to deactivate account."
-        );
+        throw new Error(data.error || "Failed to deactivate account.");
       }
 
       alert("Account deactivated successfully.");
@@ -442,53 +475,46 @@ function wireDeactivateAccount() {
 }
 
 function wireDeleteAccount() {
-  const btn = document.getElementById(
-    "deleteAccountBtn"
-  );
+  const btn = document.getElementById("deleteAccountBtn");
 
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    const confirmed = confirm(
-      "This action is permanent. Delete account?"
-    );
+    const confirmed = confirm("This action is permanent. Delete account?");
 
     if (!confirmed) return;
 
-    const password = prompt(
-      "Enter your password to continue:"
-    );
+    const password = prompt("Enter your password to continue:");
 
     if (!password) return;
 
     try {
-      const response = await fetch(
-        "/api/delete-account",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            password,
-          }),
-        }
-      );
+      const response = await fetch("/api/delete-account", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password,
+        }),
+      });
 
-      const data = await response.json();
+     const contentType =
+  response.headers.get("content-type") || "";
+
+if (!contentType.includes("application/json")) {
+  const text = await response.text();
+  throw new Error(text);
+}
+
+const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.error ||
-            "Failed to delete account."
-        );
+        throw new Error(data.error || "Failed to delete account.");
       }
 
-      alert(
-        "Account deleted successfully."
-      );
+      alert("Account deleted successfully.");
 
       window.location.href = "/login";
     } catch (error) {
@@ -497,38 +523,92 @@ function wireDeleteAccount() {
   });
 }
 
-function wireChangePassword() {
-  const modal =
-    document.getElementById(
-      "changePasswordModal"
-    );
+function passwordStrength(password) {
+  let score = 0;
 
-  const openBtn =
-    document.getElementById(
-      "changePasswordBtn"
-    );
+  if (password.length >= 8) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/\d/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  return score;
+}
+
+function wireChangePassword() {
+  document.querySelectorAll(".password-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const input = document.getElementById(btn.dataset.target);
+
+      input.type = input.type === "password" ? "text" : "password";
+
+      btn.innerHTML =
+        input.type === "password"
+          ? '<i class="fas fa-eye"></i>'
+          : '<i class="fas fa-eye-slash"></i>';
+    });
+  });
+  const passwordInput = document.getElementById("newPassword");
+
+  const strengthBar = document.getElementById("passwordStrengthBar");
+
+  const strengthText = document.getElementById("passwordStrengthText");
+
+  if (passwordInput && strengthBar && strengthText) {
+    passwordInput.addEventListener("input", () => {
+      const score = passwordStrength(passwordInput.value);
+
+      strengthBar.style.width = `${score * 20}%`;
+
+      const labels = [
+        "Very Weak",
+        "Weak",
+        "Fair",
+        "Good",
+        "Strong",
+        "Excellent",
+      ];
+
+      strengthText.textContent = labels[score];
+
+      if (score <= 1) {
+        strengthBar.style.background = "#ef4444";
+      } else if (score <= 3) {
+        strengthBar.style.background = "#f59e0b";
+      } else {
+        strengthBar.style.background = "#22c55e";
+      }
+    });
+  }
+  const confirmPassword = document.getElementById("confirmNewPassword");
+
+  if (confirmPassword) {
+    confirmPassword.addEventListener("input", () => {
+      const error = document.getElementById("confirmPasswordError");
+
+      if (
+        confirmPassword.value &&
+        confirmPassword.value !== passwordInput.value
+      ) {
+        error.textContent = "Passwords do not match";
+      } else {
+        error.textContent = "";
+      }
+    });
+  }
+  const modal = document.getElementById("changePasswordModal");
+
+  const openBtn = document.getElementById("changePasswordBtn");
 
   if (!modal || !openBtn) return;
 
-  const closeBtn =
-    document.getElementById(
-      "changePasswordClose"
-    );
+  const closeBtn = document.getElementById("changePasswordClose");
 
-  const cancelBtn =
-    document.getElementById(
-      "cancelPasswordChange"
-    );
+  const cancelBtn = document.getElementById("cancelPasswordChange");
 
-  const saveBtn =
-    document.getElementById(
-      "savePasswordBtn"
-    );
+  const saveBtn = document.getElementById("savePasswordBtn");
 
-  const message =
-    document.getElementById(
-      "changePasswordMessage"
-    );
+  const message = document.getElementById("changePasswordMessage");
 
   function closeModal() {
     modal.classList.remove("active");
@@ -538,73 +618,50 @@ function wireChangePassword() {
     modal.classList.add("active");
   });
 
-  closeBtn?.addEventListener(
-    "click",
-    closeModal
-  );
+  closeBtn?.addEventListener("click", closeModal);
 
-  cancelBtn?.addEventListener(
-    "click",
-    closeModal
-  );
+  cancelBtn?.addEventListener("click", closeModal);
 
-  saveBtn?.addEventListener(
-    "click",
-    async () => {
-      const currentPassword =
-        document.getElementById(
-          "currentPassword"
-        ).value;
+  saveBtn?.addEventListener("click", async () => {
+    const currentPassword = document.getElementById("currentPassword").value;
 
-      const newPassword =
-        document.getElementById(
-          "newPassword"
-        ).value;
+    const newPassword = document.getElementById("newPassword").value;
 
-      const confirmPassword =
-        document.getElementById(
-          "confirmNewPassword"
-        ).value;
+    const confirmPassword = document.getElementById("confirmNewPassword").value;
 
-      message.textContent = "";
+    message.textContent = "";
 
-      try {
-        const response = await fetch(
-          "/api/change-password",
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              currentPassword,
-              newPassword,
-              confirmPassword,
-            }),
-          }
-        );
+    try {
+      const response = await fetch("/api/change-password", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      });
 
-        const data =
-          await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(
-            data.error
-          );
-        }
-
-        alert(
-          "Password changed successfully. Please login again."
-        );
-
-        window.location.href =
-          "/login";
-      } catch (error) {
-        message.textContent =
-          error.message;
+      if (!response.ok) {
+        throw new Error(data.error);
       }
+
+      message.className = "password-message success";
+
+      message.textContent = "Password changed successfully. Redirecting...";
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+    } catch (error) {
+      message.className = "password-message error";
+
+      message.textContent = error.message;
     }
-  );
+  });
 }
