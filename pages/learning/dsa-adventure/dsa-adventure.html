@@ -47,9 +47,9 @@
         <div class="status-indicator" id="arenaStatus"><i class="fas fa-circle-notch fa-spin hidden" id="statusSpinner"></i> <span id="statusText">Awaiting Input</span></div>
         
         <div class="execution-controls">
-          <button id="btnPlayPause" class="ctrl-btn" disabled title="Play/Pause"><i class="fas fa-pause"></i></button>
-          <button id="btnStep" class="ctrl-btn" disabled title="Step Forward"><i class="fas fa-step-forward"></i></button>
-          <button id="btnStop" class="ctrl-btn" disabled title="Stop Execution"><i class="fas fa-stop"></i></button>
+          <button id="btnPlayPause" class="ctrl-btn" disabled title="Play/Pause" aria-label="Play/Pause"><i class="fas fa-pause"></i></button>
+          <button id="btnStep" class="ctrl-btn" disabled title="Step Forward" aria-label="Step Forward"><i class="fas fa-step-forward"></i></button>
+          <button id="btnStop" class="ctrl-btn" disabled title="Stop Execution" aria-label="Stop Execution"><i class="fas fa-stop"></i></button>
           <div class="speed-controls">
             <label for="speedSlider">Speed:</label>
             <input type="range" id="speedSlider" min="1" max="100" value="50">
@@ -62,11 +62,11 @@
       </div>
 
       <div class="arena-legend">
-        <span><div class="l-box start"></div> Start</span>
-        <span><div class="l-box target"></div> Target</span>
-        <span><div class="l-box wall"></div> Wall</span>
-        <span><div class="l-box visited"></div> Explored</span>
-        <span><div class="l-box path"></div> Path</span>
+        <span><span class="l-box start"></span> Start</span>
+        <span><span class="l-box target"></span> Target</span>
+        <span><span class="l-box wall"></span> Wall</span>
+        <span><span class="l-box visited"></span> Explored</span>
+        <span><span class="l-box path"></span> Path</span>
       </div>
     </section>
 
@@ -88,8 +88,8 @@
 
       <div class="terminal-logger">
         <div class="terminal-header">Current Operation</div>
-        <div class="current-op-box" id="currentOpBox">Awaiting algorithm selection...</div>
-        <div class="terminal-content" id="terminalLog"></div>
+        <div class="current-op-box" id="currentOpBox" aria-live="polite">Awaiting algorithm selection...</div>
+        <div class="terminal-content" id="terminalLog" aria-live="polite"></div>
       </div>
     </section>
 

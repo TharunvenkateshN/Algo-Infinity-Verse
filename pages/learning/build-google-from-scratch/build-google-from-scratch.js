@@ -11,12 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Navbar placeholder
     const navbarPlaceholder = document.getElementById('navbar-placeholder');
     if (navbarPlaceholder && !navbarPlaceholder.innerHTML) {
-        fetch('/partials/navbar.html')
-            .then(response => response.text())
-            .then(data => {
+        const loadNavbar = async () => {
+            try {
+                const response = await fetch('/partials/navbar.html');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.text();
                 navbarPlaceholder.innerHTML = data;
-            })
-            .catch(error => console.error('Error loading navbar:', error));
+            } catch (error) {
+                console.error('Error loading navbar:', error);
+            }
+        };
+        loadNavbar();
     }
 
     if (!window.courseData) {
@@ -38,9 +43,17 @@ let progressState = {
 };
 
 function loadProgress() {
-    const saved = localStorage.getItem('googleCourseProgress');
-    if (saved) {
-        progressState = JSON.parse(saved);
+    try {
+        const saved = localStorage.getItem('googleCourseProgress');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) {
+                progressState = parsed;
+            }
+        }
+    } catch (e) {
+        console.error('Error parsing progress state, resetting to default', e);
+        progressState = [];
     }
 }
 
@@ -71,15 +84,7 @@ function initCoursePlatform() {
 
     document.getElementById('btn-submit-quiz')?.addEventListener('click', submitQuiz);
 
-    // Dev cheat
-    document.getElementById('dev-unlock-btn')?.addEventListener('click', () => {
-        window.courseData.modules.forEach(m => {
-            if(!progressState.unlockedModules.includes(m.id)) progressState.unlockedModules.push(m.id);
-        });
-        saveProgress();
-        renderSyllabus();
-        alert("All modules unlocked for dev testing.");
-    });
+
 }
 
 function renderSyllabus() {
@@ -106,55 +111,73 @@ function renderSyllabus() {
 
         const modHeader = document.createElement('div');
         modHeader.className = 'module-header';
+        modHeader.setAttribute('role', 'button');
+        modHeader.setAttribute('tabindex', '0');
+        modHeader.setAttribute('aria-expanded', mIndex === currentModuleIndex ? 'true' : 'false');
         modHeader.innerHTML = `
             <div class="module-title">
-                ${isCurrentlyUnlocked ? '' : '<i class="fas fa-lock module-lock-icon"></i>'}
+                ${isCurrentlyUnlocked ? '' : '<i class="fas fa-lock module-lock-icon" aria-hidden="true"></i>'}
                 ${mod.title}
             </div>
-            <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-chevron-${mIndex === currentModuleIndex ? 'up' : 'down'}" aria-hidden="true"></i>
         `;
 
         const modItems = document.createElement('div');
         modItems.className = 'module-items';
         if (mIndex === currentModuleIndex) {
             modItems.classList.add('expanded');
-            modHeader.querySelector('.fa-chevron-down').classList.replace('fa-chevron-down', 'fa-chevron-up');
         }
 
-        modHeader.addEventListener('click', () => {
+        const toggleModule = () => {
             modItems.classList.toggle('expanded');
+            const isExpanded = modItems.classList.contains('expanded');
+            modHeader.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
             const icon = modHeader.querySelector('i:last-child');
-            if (modItems.classList.contains('expanded')) {
+            if (isExpanded) {
                 icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
             } else {
                 icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
             }
+        };
+
+        modHeader.addEventListener('click', toggleModule);
+        modHeader.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleModule();
+            }
         });
 
         mod.items.forEach((item, iIndex) => {
-            const isCompleted = progressState.completedItems.includes(item.id);
-            const itemEl = document.createElement('div');
-            itemEl.className = `lesson-item ${isCurrentlyUnlocked ? '' : 'locked'} ${isCompleted ? 'completed' : ''}`;
-            
-            let iconClass = 'fa-book-open';
-            if (item.type === 'lab') iconClass = 'fa-flask';
-            if (item.type === 'quiz') iconClass = 'fa-list-check';
-            if (isCompleted) iconClass = 'fa-check-circle';
+        mod.items.forEach((lesson, lIndex) => {
+            const isItemCompleted = progressState.completedItems.includes(lesson.id);
+            const isItemUnlocked = isCurrentlyUnlocked;
+            const isActive = currentItem && currentItem.id === lesson.id;
 
-            itemEl.innerHTML = `<i class="fas ${iconClass}"></i> ${item.title}`;
+            const item = document.createElement('div');
+            item.className = `lesson-item ${isItemCompleted ? 'completed' : ''} ${isItemUnlocked ? '' : 'locked'} ${isActive ? 'active' : ''}`;
+            item.setAttribute('role', 'button');
+            item.setAttribute('tabindex', isItemUnlocked ? '0' : '-1');
+            item.setAttribute('aria-current', isActive ? 'page' : 'false');
+            item.setAttribute('aria-disabled', isItemUnlocked ? 'false' : 'true');
 
-            if (isCurrentlyUnlocked) {
-                itemEl.addEventListener('click', () => {
-                    loadItem(mIndex, iIndex);
+            item.innerHTML = `
+                <i class="fas ${isItemCompleted ? 'fa-check-circle' : (isItemUnlocked ? 'fa-circle' : 'fa-lock')}" aria-hidden="true"></i>
+                ${lesson.title}
+            `;
+
+            if (isItemUnlocked) {
+                const loadLesson = () => loadItem(mIndex, lIndex);
+                item.addEventListener('click', loadLesson);
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        loadLesson();
+                    }
                 });
             }
 
-            // Set active if it is currently loaded
-            if (currentItem && currentItem.id === item.id) {
-                itemEl.classList.add('active');
-            }
-
-            modItems.appendChild(itemEl);
+            modItems.appendChild(item);
         });
 
         modGroup.appendChild(modHeader);

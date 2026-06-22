@@ -385,6 +385,10 @@ async function executeDFS() {
       let neighbors = getNeighbors(curr).reverse(); 
       for (let neighbor of neighbors) {
         if (!neighbor.visited && !neighbor.isWall) {
+          // Note: In DFS, we don't mark nodes visited until they are popped.
+          // This allows duplicate pushes with different parents, causing
+          // previousNode overwrites. This "chaotic" pathfinding is intentional
+          // for educational contrast with BFS.
           neighbor.previousNode = curr;
           stack.push(neighbor);
           logToTerminal(`Pushing valid Node[${neighbor.r}, ${neighbor.c}]`);
