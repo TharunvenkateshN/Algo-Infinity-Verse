@@ -499,6 +499,10 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    width: 100%;
+    text-align: left;
 }
 
 .quiz-option:hover {

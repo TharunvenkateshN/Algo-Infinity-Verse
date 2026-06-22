@@ -204,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .on("end", dragended))
     .attr("tabindex", "0")
     .attr("role", "button")
+    .attr("aria-label", d => d.label)
     .on("keydown", (event, d) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();

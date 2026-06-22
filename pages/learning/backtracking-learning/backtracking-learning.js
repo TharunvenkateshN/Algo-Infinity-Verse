@@ -166,6 +166,7 @@ function initSidebarSpy() {
         let bestDist = Infinity;
 
         lessons.forEach((lesson) => {
+            if (lesson.classList.contains("locked-lesson")) return;
             const rect = lesson.getBoundingClientRect();
             const dist = Math.abs(rect.top - NAV_HEIGHT);
             if (dist < bestDist) {
@@ -326,7 +327,7 @@ function initInteractiveProgression() {
                     let answered = false;
 
                     quizData.options.forEach((optText, optIdx) => {
-                        const optDiv = document.createElement("div");
+                        const optDiv = document.createElement("button");
                         optDiv.className = "quiz-option";
                         optDiv.textContent = optText;
 
