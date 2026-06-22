@@ -1,4 +1,4 @@
-﻿// ============================================
+// ============================================
 // PARTIAL LOADER
 // ============================================
 function getPartialsBase() {
@@ -360,7 +360,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================
 function initLoadingScreen() {
   setTimeout(() => {
-    document.getElementById("loading-screen").classList.add("hidden");
+    const loadingScreen = document.getElementById("loading-screen");
+    if (loadingScreen) loadingScreen.classList.add("hidden");
     initializeAnimations();
   }, 2000);
 }
@@ -1502,7 +1503,12 @@ function updateXPBar() {
   const currentLevelXP = levels[currentLevel - 1] || 0;
   const nextLevelXP = levels[currentLevel] || 100000;
   const xpProgress = ((userProgress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
-  setTimeout(() => { document.getElementById("xpBar").style.width = `${Math.min(xpProgress, 100)}%`; document.getElementById("xpText").textContent = `${userProgress.xp} / ${nextLevelXP} XP`; }, 300);
+  setTimeout(() => { 
+    const xpBar = document.getElementById("xpBar");
+    const xpText = document.getElementById("xpText");
+    if (xpBar) xpBar.style.width = `${Math.min(xpProgress, 100)}%`; 
+    if (xpText) xpText.textContent = `${userProgress.xp} / ${nextLevelXP} XP`; 
+  }, 300);
 }
 
 // ============================================
