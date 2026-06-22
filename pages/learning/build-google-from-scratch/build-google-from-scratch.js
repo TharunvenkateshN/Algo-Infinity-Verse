@@ -38,10 +38,17 @@ let progressState = {
 };
 
 function loadProgress() {
-    const saved = localStorage.getItem('googleCourseProgress');
-    if (saved) {
-        progressState = JSON.parse(saved);
+    try {
+        const saved = localStorage.getItem('googleCourseProgress');
+        if (!saved) return;
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed.unlockedModules) && Array.isArray(parsed.completedItems)) {
+            progressState = parsed;
+        }
+    } catch {
+        localStorage.removeItem('googleCourseProgress');
     }
+}
 }
 
 function saveProgress() {
